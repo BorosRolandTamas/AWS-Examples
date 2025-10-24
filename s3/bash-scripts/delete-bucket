@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+echo "================= Delete S3 Bucket ================"
+
+
+if [ -z "$1" ]; then
+    echo "Need a bucket name eg. . /bucket my-bucket-name"
+    exit 1
+fi
+
+aws s3api delete-bucket --bucket $1

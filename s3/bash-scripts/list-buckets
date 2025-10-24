@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "================= List S3 Buckets ================"
+
+aws s3 ls
