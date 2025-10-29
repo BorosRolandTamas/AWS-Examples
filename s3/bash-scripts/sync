@@ -11,16 +11,15 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-BUCKET_NAME =$1
 
 # Check for filename prefix
 if [ -z "$2" ]; then
-    echo "Need a bucket name eg. . /bucket my-bucket-name"
+    echo "There needs to be a filename prefix eg. ./bucket my-bucket-name my-filename-prefix"
     exit 1
 fi
 
-BUCKET_NAME =$1
-FILENAME_PREFIX =$2
+BUCKET_NAME=$1
+FILENAME_PREFIX=$2
 
 
 #Where will store this files
@@ -39,7 +38,7 @@ NUM_FILES=$((RANDOM % 6 + 5))
 
 for ((i=1; i<=NUM_FILES; i++)); do
 #Generate random file name
-       FILENAME="$OUTPUT_DIR/$FILENAME_PREFIX_$i.txt"
+       FILENAME="$OUTPUT_DIR/${FILENAME_PREFIX}_$i.txt"
 
 #Generate random data and write to file
  dd if=/dev/urandom of="$FILENAME" bs=1024 count=$((RANDOM % 1024 + 1)) 2>/dev/null

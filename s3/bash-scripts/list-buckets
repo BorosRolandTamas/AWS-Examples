@@ -3,3 +3,4 @@
 echo "================= List S3 Buckets ================"
 
 aws s3 ls
+aws s3api list-buckets | jq -r '.Buckets | sort_by(.CreationDate) | reverse | .[] | .Name'
