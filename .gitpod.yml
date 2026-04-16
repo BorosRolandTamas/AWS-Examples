@@ -1,10 +1,27 @@
 tasks:
-     - name: Setup AWS CLI
-       env:
-        AWS_CLI_AUTO_PROMPT: on-partial
 
-       before: |
-        cd /workspace
-         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-         unzip awscliv2.zip
-         sudo ./aws/install
+      - name: utils
+        before: |
+          sudp apt-get install tree
+                      # Install AWS Tools for PowerShell
+            Install-Module -Name AWSPowerShell.NetCore -Scope CurrentUser -Force -AllowClobber
+
+            # Verify the installation
+            Get-Module -ListAvailable AWSPowerShell.NetCore
+      - name: powershell
+        before: |
+                sudo apt-get update
+                sudo apt-get install -y wget apt-transport-https software-properties-common
+                wget -q "https://packages.microsoft.com/keys/microsoft.asc" -O- | sudo apt-key add -
+                sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/prod.list)"
+                sudo apt-get update
+                sudo apt-get install -y powershell
+                pwsh
+      - name: Setup AWS CLI
+        env:
+          AWS_CLI_AUTO_PROMPT: on-partial
+        before: |
+            cd /workspace
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
