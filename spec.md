@@ -1,22 +1,26 @@
-# Spec: AWS CLI Auto-Prompt Mode
+# Spec: Terraform Dev Container Support
 
 ## Problem Statement
 
-The `AWS_CLI_AUTO_PROMPT=on-partial` environment variable is defined inside a `.gitpod.yml` task that no longer runs reliably since the project moved to a devcontainer setup. As a result, the AWS CLI auto-prompt mode is not activated when the environment starts.
+Terraform `.tf` files display as plain text (no syntax highlighting) in VS Code because the HashiCorp Terraform extension is not installed in the devcontainer. Additionally, the `terraform` CLI is not available (`command not found`), making it impossible to run `terraform init`, `plan`, or `apply`.
+
+Both issues stem from the devcontainer configuration missing Terraform tooling.
 
 ## Requirements
 
-- `AWS_CLI_AUTO_PROMPT=on-partial` must be set in both:
-  1. `.gitpod.yml` — as a top-level `env` block so it applies to all tasks
-  2. `devcontainer.json` — via `remoteEnv` so it applies in the devcontainer
+1. **Terraform CLI** must be installed in the dev container so `terraform` commands work in the terminal.
+2. **HashiCorp Terraform VS Code extension** (`hashicorp.terraform`) must be installed so `.tf` files get proper syntax highlighting and language support.
 
 ## Acceptance Criteria
 
-- Running any incomplete AWS CLI command (e.g. `aws s3`) triggers the interactive auto-prompt
-- The variable is present in both `.gitpod.yml` and `devcontainer.json`
-- No duplicate or conflicting definitions remain in `.gitpod.yml` task-level env blocks
+- `terraform --version` succeeds in the terminal without errors.
+- `.tf` files display with syntax highlighting (status bar shows `Terraform` or `HCL`, not `Plain Text`).
+- `terraform init` runs successfully in `s3/iac/terraform/`.
+- The devcontainer rebuilds cleanly with no errors.
 
 ## Implementation Steps
 
-1. Add a top-level `env` block to `.gitpod.yml` with `AWS_CLI_AUTO_PROMPT: on-partial` and remove the task-level env from the `Setup AWS CLI` task
-2. Add `remoteEnv` to `.devcontainer/devcontainer.json` with `AWS_CLI_AUTO_PROMPT: on-partial`
+1. **Install Terraform CLI** — Add Terraform installation to `.devcontainer/Dockerfile` using the official HashiCorp APT repository (pinned to a stable version, e.g. `1.x`).
+2. **Add VS Code extension** — Add `"hashicorp.terraform"` to the `customizations.vscode.extensions` array in `.devcontainer/devcontainer.json`.
+3. **Rebuild the devcontainer** — Trigger a devcontainer rebuild so the changes take effect.
+4. **Verify** — Confirm `terraform --version` works and `.tf` files show syntax highlighting.

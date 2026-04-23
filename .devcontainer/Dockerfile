@@ -8,3 +8,13 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && ./aws/install \
     && rm -rf awscliv2.zip aws \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# Install Terraform
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends gnupg software-properties-common \
+    && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+       > /etc/apt/sources.list.d/hashicorp.list \
+    && apt-get update \
+    && apt-get -y install --no-install-recommends terraform \
+    && apt-get clean -y && rm -rf /var/lib/apt/lists/*
