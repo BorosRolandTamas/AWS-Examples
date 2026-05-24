@@ -15,8 +15,9 @@ provider "aws" {
 resource "aws_s3_bucket" "default" {
 }
 
-resource "aws_s3_object" "object" {
-  bucket = aws_s3_bucket.default.id
+resource "aws_s3_object" "my_object" {
+  bucket = aws_s3_bucket.my-s3-bucket.id
   key    = "myfile.txt"
-  source = "myfile.txt"
+  source = "/path/to/myfile.txt"
+  etag   = filemd5("/path/to/myfile.txt")
 }
